@@ -24,7 +24,7 @@
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow
-        icon="AllIcons.Actions.Colors"
+        icon="/icons/icon_jan.svg"
         id="PluginJan"
         factoryClass="m09.uf1.jancandalija.pluginjan.Panell"/>
 
