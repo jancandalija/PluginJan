@@ -4,12 +4,10 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.VerticalFlowLayout
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
-import com.intellij.ui.content.ContentFactory
 import com.intellij.ui.components.JBScrollPane
-import javax.swing.JPanel
-import javax.swing.BoxLayout
+import com.intellij.ui.content.ContentFactory
 import java.awt.FlowLayout
-
+import javax.swing.JPanel
 
 
 class Panell : ToolWindowFactory {
