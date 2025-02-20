@@ -22,6 +22,8 @@ import com.android.ddmlib.IDevice
 import com.android.ddmlib.AdbCommandRejectedException
 import com.android.ddmlib.TimeoutException
 import org.jetbrains.android.sdk.AndroidSdkUtils
+import java.io.BufferedReader
+import java.io.InputStreamReader
 
 
 object DarkModePanel {
@@ -30,35 +32,39 @@ object DarkModePanel {
         darkModePanel.add(JLabel(" Uninstall "))
 
         val onButton = JButton("Start")
-        onButton.addActionListener { onButtonClick(project, true) }
+        onButton.addActionListener {
+            onButtonClick(project, true)
+        }
         darkModePanel.add(onButton)
 
         return darkModePanel
     }
 
     private fun onButtonClick(project: Project, show: Boolean) {
-        val devices = AndroidSdkUtils.getDebugBridge(project)?.devices
+        val command1 = "adb shell am force-stop cat.escio.android"
+        val command2 = "C:\\Users\\Jan\\AppData\\Local\\Android\\Sdk\\platform-tools\\adb shell su rm -rf /data/data/cat.escio.android/cache/*"
+        val command3 = "C:\\Users\\Jan\\AppData\\Local\\Android\\Sdk\\platform-tools\\adb shell pm clear cat.escio.android"
+        val command4 = "C:\\Users\\Jan\\AppData\\Local\\Android\\Sdk\\platform-tools\\adb shell pm uninstall cat.escio.android"
 
-        if (!devices.isNullOrEmpty()) {
-            devices.forEach { device ->
-                try {
-                    if (show) {
-                        try {
-                            val command1 = "adb shell am force-stop cat.escio.android"
-                            val command2 = "C:\\Users\\Jan\\AppData\\Local\\Android\\Sdk\\platform-tools\\adb shell su rm -rf /data/data/cat.escio.android/cache/*"
-                            val command3 = "C:\\Users\\Jan\\AppData\\Local\\Android\\Sdk\\platform-tools\\adb shell pm clear cat.escio.android"
-                            val command4 = "C:\\Users\\Jan\\AppData\\Local\\Android\\Sdk\\platform-tools\\adb shell pm uninstall cat.escio.android"
-                            device.executeShellCommand(command1, null, 0)
-                            device.executeShellCommand(command2, null, 0)
-                            device.executeShellCommand(command3, null, 0)
-                            device.executeShellCommand(command4, null, 0)
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-                    }
-                } catch (_: Exception) {
-                }
+        // Ejecutamos los comandos secuenciales
+        executeCommand(command1)
+        executeCommand(command2)
+        executeCommand(command3)
+        executeCommand(command4)
+    }
+
+    private fun executeCommand(command: String) {
+        try {
+            // Ejecutar el comando en el sistema
+            val process = Runtime.getRuntime().exec(command)
+            val reader = BufferedReader(InputStreamReader(process.inputStream))
+            var line: String?
+            while (reader.readLine().also { line = it } != null) {
+                println(line) // Puedes imprimir la salida de cada comando si lo deseas
             }
+            process.waitFor() // Esperar a que termine el proceso
+        } catch (e: Exception) {
+            e.printStackTrace()  // Imprimir error si algo falla
         }
     }
 }
