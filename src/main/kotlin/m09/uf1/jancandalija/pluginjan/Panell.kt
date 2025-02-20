@@ -14,7 +14,7 @@ class Panell : ToolWindowFactory {
     override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
 
         val contentPanel = JPanel(VerticalFlowLayout(FlowLayout.LEFT))
-        contentPanel.add(DarkModePanel.addDarkModePanel(project))
+        contentPanel.add(DarkModePanel.addPanellPrincipal(project))
 
         val scrollPanel = JBScrollPane(contentPanel)
         scrollPanel.verticalScrollBarPolicy = JBScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED

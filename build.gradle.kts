@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "m09.uf1.jancandalija"
-version = "1.1-SNAPSHOT"
+version = "1.6.DEV"
 
 repositories {
     mavenCentral()
