@@ -1,11 +1,7 @@
 package m09.uf1.jancandalija.pluginjan
 
 import com.intellij.openapi.project.Project
-import com.intellij.ui.JBColor
-import java.awt.Color
 import java.awt.FlowLayout
-import java.awt.Graphics
-import java.awt.Graphics2D
 
 import java.io.BufferedReader
 import java.io.File
@@ -36,7 +32,6 @@ object DarkModePanel {
 
         val rutaExemplePanel = JPanel(FlowLayout(FlowLayout.LEFT))
         rutaExemplePanel.add(JLabel("Ruta ADB (Exemple): " + examplePath))
-        commandPanel.add(rutaExemplePanel)
 
 
         // Panel para organizar la etiqueta y el campo de texto en horizontal
@@ -57,39 +52,54 @@ object DarkModePanel {
         }
         pathPanel.add(saveButton)
 
-        // Añadir el panel con la ruta de ADB al panel principal
-        commandPanel.add(pathPanel)
 
         // ESPAI EN BLANC
+
         val espaiBlancPanel = JPanel(FlowLayout(FlowLayout.LEFT))
         espaiBlancPanel.add(JLabel(""))
-        commandPanel.add(espaiBlancPanel)
+
+
+        // APARTAT: Desinstal·lar APP
 
         val desinstalarAppPanel = JPanel(FlowLayout(FlowLayout.LEFT))
+        val desinstalarPanel = JPanel(FlowLayout(FlowLayout.LEFT))
+        val botoDesinstalarApp = JButton("INICIA")
 
-        // Botón para ejecutar los comandos
-        val onButton = JButton("INICIA")
-        onButton.addActionListener {
-            onButtonClick()
-        }
-        onButton.background = JBColor.BLUE
-        onButton.isOpaque = true
+        botoDesinstalarApp.addActionListener { execDesinstalarApp() }
 
-        val executeButtonPanel = JPanel(FlowLayout(FlowLayout.LEFT))  // Alineado a la izquierda
-        executeButtonPanel.add(onButton)
-        desinstalarAppPanel.add(executeButtonPanel)
+        desinstalarPanel.add(botoDesinstalarApp)
 
-        // Título del panel
-
+        desinstalarAppPanel.add(desinstalarPanel)
         desinstalarAppPanel.add(JLabel("Desinstal·la APP (Neteja l'User Data i Cache)"))
+
+
+        // APARTAT: Instal·lar APP
+
+        val instalarAppPanel = JPanel(FlowLayout(FlowLayout.LEFT))
+        val instalarPanel = JPanel(FlowLayout(FlowLayout.LEFT))
+        val botoInstalarApp = JButton("INICIA")
+
+        botoInstalarApp.addActionListener { execInstalarApp() }
+
+        instalarPanel.add(botoInstalarApp)
+
+        instalarAppPanel.add(instalarPanel)
+        instalarAppPanel.add(JLabel("Instal·la APP (Google Play)"))
+
+
+
+        // Construir el panell amb cada component
+
+        commandPanel.add(rutaExemplePanel)
+        commandPanel.add(pathPanel)
+        commandPanel.add(espaiBlancPanel)
         commandPanel.add(desinstalarAppPanel)
-
-
+        commandPanel.add(instalarAppPanel)
 
         return commandPanel
     }
 
-    private fun onButtonClick() {
+    private fun execDesinstalarApp() {
 
         if (!adbPath.isNullOrEmpty()) {
             val command1 = "$adbPath shell am force-stop cat.escio.android"
@@ -102,6 +112,33 @@ object DarkModePanel {
             executeCommand(command2)
             executeCommand(command3)
             executeCommand(command4)
+        }
+    }
+
+    private fun execInstalarApp() {
+
+        if (!adbPath.isNullOrEmpty()) {
+
+            val thread = Thread {
+                val command1 = "$adbPath shell am start -a android.intent.action.VIEW -d \"https://play.google.com/store\""
+                val command3 = "$adbPath shell input tap 700 1700"
+                val command5 = "$adbPath shell input tap 300 100"
+                val command7 = "$adbPath shell input text \"escio\""
+                val command9 = "$adbPath shell input tap 1000 1700"
+                val command11 = "$adbPath shell input tap 950 1000"
+
+                executeCommand(command1)
+                Thread.sleep(4200)
+                executeCommand(command3)
+                Thread.sleep(500)
+                executeCommand(command5)
+                Thread.sleep(500)
+                executeCommand(command7)
+                Thread.sleep(500)
+                executeCommand(command9)
+                Thread.sleep(700)
+                executeCommand(command11)
+            }.start()
         }
     }
 
