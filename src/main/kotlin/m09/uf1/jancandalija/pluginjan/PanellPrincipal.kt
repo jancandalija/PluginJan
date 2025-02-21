@@ -1,6 +1,10 @@
 package m09.uf1.jancandalija.pluginjan
 
+import com.intellij.icons.AllIcons
+import com.intellij.icons.AllIcons.Icons
 import com.intellij.openapi.project.Project
+import org.jetbrains.kotlin.idea.base.util.onTextChange
+import org.w3c.dom.css.RGBColor
 import java.awt.Color
 import java.awt.FlowLayout
 import java.io.*
@@ -12,7 +16,8 @@ object PanellPrincipal {
     private const val CONFIG_FILE_ADB = "config.txt"  // Archivo donde se guardará la ruta de adb
     private const val CONFIG_FILE_ACTIVA_LOGIN_AUTO = "configLoginAuto.txt"  // Archivo donde se guardará la ruta de adb
     private var examplePath: String = "C:\\Users\\Jan\\AppData\\Local\\Android\\Sdk\\platform-tools\\adb"
-
+    val colorBlau = Color(100,100,255)
+    val colorGreen = Color.GREEN
 
     // La ruta por defecto si no existe la configuración
     private var adbPath: String = ""
@@ -41,7 +46,8 @@ object PanellPrincipal {
         pathPanel.add(adbPathTextField)
 
         // Botón para guardar la ruta
-        val saveButton = JButton("Desa")
+        val saveButton = JButton() // DESA
+        saveButton.icon = AllIcons.Actions.MenuSaveall
         saveButton.addActionListener {
             adbPath = adbPathTextField.text  // Guardar la ruta en la variable
             saveAdbPath(adbPath)  // Guardar la ruta en el archivo
@@ -55,6 +61,8 @@ object PanellPrincipal {
         val desinstalarAppPanel = JPanel(FlowLayout(FlowLayout.LEFT))
         val desinstalarPanel = JPanel(FlowLayout(FlowLayout.LEFT))
         val botoDesinstalarApp = JButton("INICIA")
+        botoDesinstalarApp.icon = AllIcons.Debugger.ThreadRunning
+        botoDesinstalarApp.foreground = colorGreen
 
         botoDesinstalarApp.addActionListener { execDesinstalarApp() }
 
@@ -69,6 +77,8 @@ object PanellPrincipal {
         val instalarAppPanel = JPanel(FlowLayout(FlowLayout.LEFT))
         val instalarPanel = JPanel(FlowLayout(FlowLayout.LEFT))
         val botoInstalarApp = JButton("INICIA")
+        botoInstalarApp.icon = AllIcons.Debugger.ThreadRunning
+        botoInstalarApp.foreground = colorGreen
 
         botoInstalarApp.addActionListener { execInstalarApp() }
 
@@ -81,6 +91,7 @@ object PanellPrincipal {
 
         val isToggleOn = loadToggleLoginAutoState()
 
+        // Botó ON OFF Login Window
         val credencialesPanel = JPanel()
         credencialesPanel.layout = BoxLayout(credencialesPanel, BoxLayout.Y_AXIS)
         credencialesPanel.isVisible = isToggleOn
@@ -88,14 +99,38 @@ object PanellPrincipal {
         val grupBotoActivarLoginAutomatic = JPanel(FlowLayout(FlowLayout.LEFT))
         val toggleLoginPanel = JPanel(FlowLayout(FlowLayout.LEFT))
 
+        // Boto INICIA
+
+        val grupBotoIniciaSaveLoginAuto = JPanel(FlowLayout(FlowLayout.LEFT))
+
+        val iniciaLoginAutomatic = JButton("INICIA")
+        iniciaLoginAutomatic.foreground = colorGreen
+        iniciaLoginAutomatic.icon = AllIcons.Debugger.ThreadRunning
+        iniciaLoginAutomatic.addActionListener {
+
+        }
+
+        // Boto DESA
+
+        val saveLoginAutomatic = JButton() //DESA
+        saveLoginAutomatic.icon = AllIcons.Actions.MenuSaveall
+        saveLoginAutomatic.addActionListener {
+
+        }
+
+        grupBotoIniciaSaveLoginAuto.add(iniciaLoginAutomatic)
+        grupBotoIniciaSaveLoginAuto.add(saveLoginAutomatic)
+
+        // Labels Credencials
+
         val toggleCredenciales = JToggleButton(if (isToggleOn) "ON" else "OFF")
         toggleCredenciales.isSelected = isToggleOn
-        toggleCredenciales.foreground = if (isToggleOn) Color.GREEN else Color.RED
+        toggleCredenciales.foreground = if (isToggleOn) colorBlau else Color.RED
         toggleCredenciales.addActionListener {
             val selected = toggleCredenciales.isSelected
             credencialesPanel.isVisible = selected
             toggleCredenciales.text = if (selected) "ON" else "OFF"
-            toggleCredenciales.foreground = if (selected) Color.GREEN else Color.RED
+            toggleCredenciales.foreground = if (selected) colorBlau else Color.RED
 
             saveToggleLoginAutoState(selected)
         }
@@ -125,10 +160,11 @@ object PanellPrincipal {
         panellCredencialsPassword.add(JLabel("Password: "))
         panellCredencialsPassword.add(edtPassword)
 
-        credencialesPanel.add(panellCredencialsEntorn);
-        credencialesPanel.add(panellCredencialsDomini);
-        credencialesPanel.add(panellCredencialsUsuari);
-        credencialesPanel.add(panellCredencialsPassword);
+        credencialesPanel.add(panellCredencialsEntorn)
+        credencialesPanel.add(panellCredencialsDomini)
+        credencialesPanel.add(panellCredencialsUsuari)
+        credencialesPanel.add(panellCredencialsPassword)
+        credencialesPanel.add(grupBotoIniciaSaveLoginAuto)
 
         // Construir el panell amb cada component
 
