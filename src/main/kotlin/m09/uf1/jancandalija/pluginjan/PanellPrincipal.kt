@@ -2,17 +2,12 @@ package m09.uf1.jancandalija.pluginjan
 
 import com.intellij.openapi.project.Project
 import java.awt.FlowLayout
-
-import java.io.BufferedReader
-import java.io.File
-import java.io.FileReader
-import java.io.FileWriter
-import java.io.IOException
-import java.io.InputStreamReader
+import java.awt.event.ActionEvent
+import java.io.*
 import javax.swing.*
 
 
-object DarkModePanel {
+object PanellPrincipal {
     private const val CONFIG_FILE = "config.txt"  // Archivo donde se guardará la ruta de adb
     private var examplePath: String = "C:\\Users\\Jan\\AppData\\Local\\Android\\Sdk\\platform-tools\\adb"
 
@@ -52,11 +47,7 @@ object DarkModePanel {
         }
         pathPanel.add(saveButton)
 
-
-        // ESPAI EN BLANC
-
-        val espaiBlancPanel = JPanel(FlowLayout(FlowLayout.LEFT))
-        espaiBlancPanel.add(JLabel(""))
+        val espaiBlancPanel = getEspaiEnBlanc()
 
 
         // APARTAT: Desinstal·lar APP
@@ -86,15 +77,55 @@ object DarkModePanel {
         instalarAppPanel.add(instalarPanel)
         instalarAppPanel.add(JLabel("Instal·la APP (Google Play)"))
 
+        // Agrupació inici sessió automàtic
 
+        val credencialesPanel = JPanel()
+        credencialesPanel.layout = BoxLayout(credencialesPanel, BoxLayout.Y_AXIS)
+        credencialesPanel.isVisible = false
+
+        val toggleCredenciales = JToggleButton("Mostrar credenciales")
+        toggleCredenciales.addActionListener { e: ActionEvent? ->
+            credencialesPanel.setVisible(toggleCredenciales.isSelected)
+            toggleCredenciales.text =
+                if (toggleCredenciales.isSelected) "Ocultar credenciales" else "Mostrar credenciales"
+        }
+
+        // APARTAT: Inici sessió automàtic
+
+        val panellCredencialsEntorn = JPanel(FlowLayout(FlowLayout.LEFT))
+        val panellCredencialsDomini = JPanel(FlowLayout(FlowLayout.LEFT))
+        val panellCredencialsUsuari = JPanel(FlowLayout(FlowLayout.LEFT))
+        val panellCredencialsPassword = JPanel(FlowLayout(FlowLayout.LEFT))
+
+        val edtEntorn = JTextField("", 15)
+        val edtDomini = JTextField("", 15)
+        val edtUsuari = JTextField("", 15)
+        val edtPassword = JPasswordField("", 18)
+
+        panellCredencialsEntorn.add(JLabel("Entorn: "))
+        panellCredencialsEntorn.add(edtEntorn)
+        panellCredencialsDomini.add(JLabel("Domini: "))
+        panellCredencialsDomini.add(edtDomini)
+        panellCredencialsUsuari.add(JLabel("Usuari: "))
+        panellCredencialsUsuari.add(edtUsuari)
+        panellCredencialsPassword.add(JLabel("Password: "))
+        panellCredencialsPassword.add(edtPassword)
+
+        credencialesPanel.add(panellCredencialsEntorn);
+        credencialesPanel.add(panellCredencialsDomini);
+        credencialesPanel.add(panellCredencialsUsuari);
+        credencialesPanel.add(panellCredencialsPassword);
 
         // Construir el panell amb cada component
 
         commandPanel.add(rutaExemplePanel)
         commandPanel.add(pathPanel)
-        commandPanel.add(espaiBlancPanel)
+        commandPanel.add(getEspaiEnBlanc())
         commandPanel.add(desinstalarAppPanel)
         commandPanel.add(instalarAppPanel)
+        commandPanel.add(getEspaiEnBlanc())
+        commandPanel.add(toggleCredenciales)
+        commandPanel.add(credencialesPanel)
 
         return commandPanel
     }
@@ -107,7 +138,6 @@ object DarkModePanel {
             val command3 = "$adbPath shell pm clear cat.escio.android"
             val command4 = "$adbPath shell pm uninstall cat.escio.android"
 
-            // Ejecutamos los comandos secuenciales
             executeCommand(command1)
             executeCommand(command2)
             executeCommand(command3)
@@ -144,7 +174,6 @@ object DarkModePanel {
 
     private fun executeCommand(command: String) {
         try {
-            // Ejecutar el comando en el sistema
             val process = Runtime.getRuntime().exec(command)
             val reader = BufferedReader(InputStreamReader(process.inputStream))
             var line: String?
@@ -153,17 +182,16 @@ object DarkModePanel {
             }
             process.waitFor() // Esperar a que termine el proceso
         } catch (e: Exception) {
-            e.printStackTrace()  // Imprimir error si algo falla
+            e.printStackTrace()
         }
     }
 
     private fun loadAdbPath() {
-        // Intentar leer la ruta de adb desde el archivo
         try {
             val file = File(CONFIG_FILE)
             if (file.exists()) {
                 val reader = BufferedReader(FileReader(file))
-                adbPath = reader.readLine()  // Leer la primera línea que contiene la ruta
+                adbPath = reader.readLine()
                 reader.close()
             }
         } catch (e: IOException) {
@@ -172,15 +200,20 @@ object DarkModePanel {
     }
 
     private fun saveAdbPath(path: String) {
-        // Guardar la ruta de adb en un archivo
         try {
             val file = File(CONFIG_FILE)
             val writer = FileWriter(file)
-            writer.write(path)  // Guardamos la ruta en el archivo
+            writer.write(path)
             writer.close()
         } catch (e: IOException) {
             e.printStackTrace()
         }
+    }
+
+    private fun getEspaiEnBlanc(): JPanel {
+        val espaiBlancPanel = JPanel(FlowLayout(FlowLayout.LEFT))
+        espaiBlancPanel.add(JLabel(""))
+        return espaiBlancPanel
     }
 
 }
