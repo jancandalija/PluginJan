@@ -1,14 +1,16 @@
 package m09.uf1.jancandalija.pluginjan
 
 import com.intellij.openapi.project.Project
+import java.awt.Color
 import java.awt.FlowLayout
-import java.awt.event.ItemEvent
 import java.io.*
+import java.util.Properties
 import javax.swing.*
 
 
 object PanellPrincipal {
-    private const val CONFIG_FILE = "config.txt"  // Archivo donde se guardará la ruta de adb
+    private const val CONFIG_FILE_ADB = "config.txt"  // Archivo donde se guardará la ruta de adb
+    private const val CONFIG_FILE_ACTIVA_LOGIN_AUTO = "configLoginAuto.txt"  // Archivo donde se guardará la ruta de adb
     private var examplePath: String = "C:\\Users\\Jan\\AppData\\Local\\Android\\Sdk\\platform-tools\\adb"
 
 
@@ -47,8 +49,6 @@ object PanellPrincipal {
         }
         pathPanel.add(saveButton)
 
-        val espaiBlancPanel = getEspaiEnBlanc()
-
 
         // APARTAT: Desinstal·lar APP
 
@@ -79,16 +79,30 @@ object PanellPrincipal {
 
         // Agrupació inici sessió automàtic
 
+        val isToggleOn = loadToggleLoginAutoState()
+
         val credencialesPanel = JPanel()
         credencialesPanel.layout = BoxLayout(credencialesPanel, BoxLayout.Y_AXIS)
-        credencialesPanel.isVisible = false
+        credencialesPanel.isVisible = isToggleOn
 
-        val desplegableCredenciales = JComboBox(arrayOf("Mostrar credenciales", "Ocultar credenciales"))
-        desplegableCredenciales.addItemListener { e: ItemEvent ->
-            if (e.stateChange == ItemEvent.SELECTED) {
-                credencialesPanel.isVisible = desplegableCredenciales.selectedIndex == 0
-            }
+        val grupBotoActivarLoginAutomatic = JPanel(FlowLayout(FlowLayout.LEFT))
+        val toggleLoginPanel = JPanel(FlowLayout(FlowLayout.LEFT))
+
+        val toggleCredenciales = JToggleButton(if (isToggleOn) "ON" else "OFF")
+        toggleCredenciales.isSelected = isToggleOn
+        toggleCredenciales.foreground = if (isToggleOn) Color.GREEN else Color.RED
+        toggleCredenciales.addActionListener {
+            val selected = toggleCredenciales.isSelected
+            credencialesPanel.isVisible = selected
+            toggleCredenciales.text = if (selected) "ON" else "OFF"
+            toggleCredenciales.foreground = if (selected) Color.GREEN else Color.RED
+
+            saveToggleLoginAutoState(selected)
         }
+        toggleLoginPanel.add(toggleCredenciales)
+
+        grupBotoActivarLoginAutomatic.add(toggleLoginPanel)
+        grupBotoActivarLoginAutomatic.add(JLabel("Login Automàtic "))
 
         // APARTAT: Inici sessió automàtic
 
@@ -121,11 +135,14 @@ object PanellPrincipal {
         commandPanel.add(rutaExemplePanel)
         commandPanel.add(pathPanel)
         commandPanel.add(getEspaiEnBlanc())
+        commandPanel.add(JSeparator(SwingConstants.HORIZONTAL));
         commandPanel.add(desinstalarAppPanel)
+        commandPanel.add(JSeparator(SwingConstants.HORIZONTAL));
         commandPanel.add(instalarAppPanel)
-        commandPanel.add(getEspaiEnBlanc())
-        commandPanel.add(desplegableCredenciales)
+        commandPanel.add(JSeparator(SwingConstants.HORIZONTAL));
+        commandPanel.add(grupBotoActivarLoginAutomatic)
         commandPanel.add(credencialesPanel)
+        commandPanel.add(JSeparator(SwingConstants.HORIZONTAL));
 
         return commandPanel
     }
@@ -188,7 +205,7 @@ object PanellPrincipal {
 
     private fun loadAdbPath() {
         try {
-            val file = File(CONFIG_FILE)
+            val file = File(CONFIG_FILE_ADB)
             if (file.exists()) {
                 val reader = BufferedReader(FileReader(file))
                 adbPath = reader.readLine()
@@ -201,13 +218,40 @@ object PanellPrincipal {
 
     private fun saveAdbPath(path: String) {
         try {
-            val file = File(CONFIG_FILE)
+            val file = File(CONFIG_FILE_ADB)
             val writer = FileWriter(file)
             writer.write(path)
             writer.close()
         } catch (e: IOException) {
             e.printStackTrace()
         }
+    }
+
+    private fun saveToggleLoginAutoState(isOn: Boolean) {
+        try {
+            val properties = Properties()
+            properties.setProperty("toggleState", isOn.toString())
+
+            FileWriter(CONFIG_FILE_ACTIVA_LOGIN_AUTO).use { writer ->
+                properties.store(writer, null)
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun loadToggleLoginAutoState(): Boolean {
+        val properties = Properties()
+        try {
+            File(CONFIG_FILE_ACTIVA_LOGIN_AUTO).takeIf { it.exists() }?.let { file ->
+                FileReader(file).use { reader ->
+                    properties.load(reader)
+                }
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return properties.getProperty("toggleState", "false").toBoolean()
     }
 
     private fun getEspaiEnBlanc(): JPanel {
