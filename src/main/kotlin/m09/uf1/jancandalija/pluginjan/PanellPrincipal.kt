@@ -2,7 +2,7 @@ package m09.uf1.jancandalija.pluginjan
 
 import com.intellij.openapi.project.Project
 import java.awt.FlowLayout
-import java.awt.event.ActionEvent
+import java.awt.event.ItemEvent
 import java.io.*
 import javax.swing.*
 
@@ -83,11 +83,11 @@ object PanellPrincipal {
         credencialesPanel.layout = BoxLayout(credencialesPanel, BoxLayout.Y_AXIS)
         credencialesPanel.isVisible = false
 
-        val toggleCredenciales = JToggleButton("Mostrar credenciales")
-        toggleCredenciales.addActionListener { e: ActionEvent? ->
-            credencialesPanel.setVisible(toggleCredenciales.isSelected)
-            toggleCredenciales.text =
-                if (toggleCredenciales.isSelected) "Ocultar credenciales" else "Mostrar credenciales"
+        val desplegableCredenciales = JComboBox(arrayOf("Mostrar credenciales", "Ocultar credenciales"))
+        desplegableCredenciales.addItemListener { e: ItemEvent ->
+            if (e.stateChange == ItemEvent.SELECTED) {
+                credencialesPanel.isVisible = desplegableCredenciales.selectedIndex == 0
+            }
         }
 
         // APARTAT: Inici sessió automàtic
@@ -124,7 +124,7 @@ object PanellPrincipal {
         commandPanel.add(desinstalarAppPanel)
         commandPanel.add(instalarAppPanel)
         commandPanel.add(getEspaiEnBlanc())
-        commandPanel.add(toggleCredenciales)
+        commandPanel.add(desplegableCredenciales)
         commandPanel.add(credencialesPanel)
 
         return commandPanel
