@@ -1,10 +1,9 @@
 package m09.uf1.jancandalija.pluginjan
 
 import com.intellij.icons.AllIcons
-import com.intellij.icons.AllIcons.Icons
+import com.intellij.icons.ExpUiIcons
 import com.intellij.openapi.project.Project
-import org.jetbrains.kotlin.idea.base.util.onTextChange
-import org.w3c.dom.css.RGBColor
+import com.intellij.openapi.util.IconLoader
 import java.awt.Color
 import java.awt.FlowLayout
 import java.io.*
@@ -16,8 +15,9 @@ object PanellPrincipal {
     private const val CONFIG_FILE_ADB = "config.txt"  // Archivo donde se guardará la ruta de adb
     private const val CONFIG_FILE_ACTIVA_LOGIN_AUTO = "configLoginAuto.txt"  // Archivo donde se guardará la ruta de adb
     private var examplePath: String = "C:\\Users\\Jan\\AppData\\Local\\Android\\Sdk\\platform-tools\\adb"
-    val colorBlau = Color(100,100,255)
-    val colorGreen = Color.GREEN
+    val colorBlau = Color(84,138,247)
+    val colorVermell = Color(219,92,92)
+    val colorVerd = Color(87, 150, 92)
 
     // La ruta por defecto si no existe la configuración
     private var adbPath: String = ""
@@ -46,14 +46,28 @@ object PanellPrincipal {
         pathPanel.add(adbPathTextField)
 
         // Botón para guardar la ruta
-        val saveButton = JButton() // DESA
-        saveButton.icon = AllIcons.Actions.MenuSaveall
-        saveButton.addActionListener {
+        val saveAdbRutaButton_RESULT_OK = JButton()
+        saveAdbRutaButton_RESULT_OK.icon = AllIcons.General.InspectionsOK
+        saveAdbRutaButton_RESULT_OK.isBorderPainted = false
+        saveAdbRutaButton_RESULT_OK.isVisible = false
+
+        val saveAdbRutaButton = JButton() // DESA
+        saveAdbRutaButton.icon = AllIcons.Actions.MenuSaveall
+        saveAdbRutaButton.addActionListener {
+            Thread {
+                saveAdbRutaButton.icon = IconLoader.getIcon("/icons/loader.svg", javaClass)
+                Thread.sleep(500)
+                saveAdbRutaButton.icon = AllIcons.Actions.MenuSaveall
+                saveAdbRutaButton_RESULT_OK.isVisible = true
+                Thread.sleep(3000)
+                saveAdbRutaButton_RESULT_OK.isVisible = false
+            }.start()
+
             adbPath = adbPathTextField.text  // Guardar la ruta en la variable
             saveAdbPath(adbPath)  // Guardar la ruta en el archivo
-            JOptionPane.showMessageDialog(null, "(OK) Ruta desada")
         }
-        pathPanel.add(saveButton)
+        pathPanel.add(saveAdbRutaButton)
+        pathPanel.add(saveAdbRutaButton_RESULT_OK)
 
 
         // APARTAT: Desinstal·lar APP
@@ -61,10 +75,18 @@ object PanellPrincipal {
         val desinstalarAppPanel = JPanel(FlowLayout(FlowLayout.LEFT))
         val desinstalarPanel = JPanel(FlowLayout(FlowLayout.LEFT))
         val botoDesinstalarApp = JButton("INICIA")
-        botoDesinstalarApp.icon = AllIcons.Debugger.ThreadRunning
-        botoDesinstalarApp.foreground = colorGreen
+        botoDesinstalarApp.icon = ExpUiIcons.Run.Run
+        botoDesinstalarApp.foreground = colorVerd
 
-        botoDesinstalarApp.addActionListener { execDesinstalarApp() }
+        botoDesinstalarApp.addActionListener {
+            Thread {
+                botoDesinstalarApp.icon = IconLoader.getIcon("/icons/loader.svg", javaClass)
+                Thread.sleep(500)
+                botoDesinstalarApp.icon = ExpUiIcons.Run.Run
+            }.start()
+
+            execDesinstalarApp()
+        }
 
         desinstalarPanel.add(botoDesinstalarApp)
 
@@ -77,10 +99,18 @@ object PanellPrincipal {
         val instalarAppPanel = JPanel(FlowLayout(FlowLayout.LEFT))
         val instalarPanel = JPanel(FlowLayout(FlowLayout.LEFT))
         val botoInstalarApp = JButton("INICIA")
-        botoInstalarApp.icon = AllIcons.Debugger.ThreadRunning
-        botoInstalarApp.foreground = colorGreen
+        botoInstalarApp.icon = ExpUiIcons.Run.Run
+        botoInstalarApp.foreground = colorVerd
 
-        botoInstalarApp.addActionListener { execInstalarApp() }
+        botoInstalarApp.addActionListener {
+            Thread {
+                botoInstalarApp.icon = IconLoader.getIcon("/icons/loader.svg", javaClass)
+                Thread.sleep(500)
+                botoInstalarApp.icon = ExpUiIcons.Run.Run
+            }.start()
+
+            execInstalarApp()
+        }
 
         instalarPanel.add(botoInstalarApp)
 
@@ -104,33 +134,55 @@ object PanellPrincipal {
         val grupBotoIniciaSaveLoginAuto = JPanel(FlowLayout(FlowLayout.LEFT))
 
         val iniciaLoginAutomatic = JButton("INICIA")
-        iniciaLoginAutomatic.foreground = colorGreen
-        iniciaLoginAutomatic.icon = AllIcons.Debugger.ThreadRunning
+        iniciaLoginAutomatic.foreground = colorVerd
+        iniciaLoginAutomatic.icon = ExpUiIcons.Run.Run
         iniciaLoginAutomatic.addActionListener {
-
+            Thread {
+                iniciaLoginAutomatic.icon = IconLoader.getIcon("/icons/loader.svg", javaClass)
+                Thread.sleep(500)
+                iniciaLoginAutomatic.icon = ExpUiIcons.Run.Run
+            }.start()
         }
 
         // Boto DESA
 
+        val saveLoginAutomatic_RESULT_OK = JButton()
+        saveLoginAutomatic_RESULT_OK.icon = AllIcons.General.InspectionsOK
+        saveLoginAutomatic_RESULT_OK.isBorderPainted = false
+        saveLoginAutomatic_RESULT_OK.isVisible = false
+
         val saveLoginAutomatic = JButton() //DESA
         saveLoginAutomatic.icon = AllIcons.Actions.MenuSaveall
         saveLoginAutomatic.addActionListener {
+            Thread {
+                saveLoginAutomatic.icon = IconLoader.getIcon("/icons/loader.svg", javaClass)
+                Thread.sleep(500)
+                saveLoginAutomatic.icon = AllIcons.Actions.MenuSaveall
+                saveLoginAutomatic_RESULT_OK.isVisible = true
+                Thread.sleep(1000)
+                saveLoginAutomatic_RESULT_OK.isVisible = false
+            }.start()
 
         }
 
         grupBotoIniciaSaveLoginAuto.add(iniciaLoginAutomatic)
         grupBotoIniciaSaveLoginAuto.add(saveLoginAutomatic)
+        grupBotoIniciaSaveLoginAuto.add(saveLoginAutomatic_RESULT_OK)
 
         // Labels Credencials
 
         val toggleCredenciales = JToggleButton(if (isToggleOn) "ON" else "OFF")
+        toggleCredenciales.isFocusable = false
+        toggleCredenciales.icon = if (isToggleOn) ExpUiIcons.Nodes.ModuleJava else AllIcons.Actions.Suspend
         toggleCredenciales.isSelected = isToggleOn
-        toggleCredenciales.foreground = if (isToggleOn) colorBlau else Color.RED
+        toggleCredenciales.foreground = if (isToggleOn) colorBlau else colorVermell
         toggleCredenciales.addActionListener {
             val selected = toggleCredenciales.isSelected
             credencialesPanel.isVisible = selected
             toggleCredenciales.text = if (selected) "ON" else "OFF"
-            toggleCredenciales.foreground = if (selected) colorBlau else Color.RED
+            toggleCredenciales.foreground = if (selected) colorBlau else colorVermell
+            toggleCredenciales.icon = if (selected) ExpUiIcons.Nodes.ModuleJava else AllIcons.Actions.Suspend
+
 
             saveToggleLoginAutoState(selected)
         }
@@ -151,13 +203,23 @@ object PanellPrincipal {
         val edtUsuari = JTextField("", 15)
         val edtPassword = JPasswordField("", 18)
 
-        panellCredencialsEntorn.add(JLabel("Entorn: "))
+        val labelEntorn = JLabel("Entorn: ")
+        val labelDomini = JLabel("Domini: ")
+        val labelUsuari = JLabel("Usuari: ")
+        val labelPassword = JLabel("Password: ")
+
+        labelEntorn.icon = AllIcons.Nodes.Servlet
+        labelDomini.icon = AllIcons.Nodes.PpWeb
+        labelUsuari.icon = AllIcons.General.User
+        labelPassword.icon = AllIcons.CodeWithMe.CwmPermissions
+
+        panellCredencialsEntorn.add(labelEntorn)
         panellCredencialsEntorn.add(edtEntorn)
-        panellCredencialsDomini.add(JLabel("Domini: "))
+        panellCredencialsDomini.add(labelDomini)
         panellCredencialsDomini.add(edtDomini)
-        panellCredencialsUsuari.add(JLabel("Usuari: "))
+        panellCredencialsUsuari.add(labelUsuari)
         panellCredencialsUsuari.add(edtUsuari)
-        panellCredencialsPassword.add(JLabel("Password: "))
+        panellCredencialsPassword.add(labelPassword)
         panellCredencialsPassword.add(edtPassword)
 
         credencialesPanel.add(panellCredencialsEntorn)
@@ -244,7 +306,7 @@ object PanellPrincipal {
             val file = File(CONFIG_FILE_ADB)
             if (file.exists()) {
                 val reader = BufferedReader(FileReader(file))
-                adbPath = reader.readLine()
+                adbPath = reader.readLine() ?: ""
                 reader.close()
             }
         } catch (e: IOException) {
