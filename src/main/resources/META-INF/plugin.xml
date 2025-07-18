@@ -18,16 +18,37 @@
     <!-- Product and plugin compatibility requirements.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
-    <depends>org.jetbrains.android</depends>
+<!--    <depends>org.jetbrains.android</depends>-->
 
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
-    <extensions defaultExtensionNs="com.intellij">
-        <toolWindow
-        icon="/icons/icon_jan.svg"
-        id="PluginJan"
-        factoryClass="m09.uf1.jancandalija.pluginjan.Panell"/>
 
+<!--    <extensions defaultExtensionNs="com.intellij">-->
+<!--        <toolWindow-->
+<!--        icon="/icons/icon_jan.svg"-->
+<!--        id="PluginJan"-->
+<!--        factoryClass="m09.uf1.jancandalija.pluginjan.Panell"/>-->
+
+<!--    </extensions>-->
+
+    <extensions defaultExtensionNs="com.intellij">
+        <toolWindow id="PluginJan"
+                    anchor="left"
+                    icon="/icons/icon_jan.svg"
+                    factoryClass="m09.uf1.jancandalija.pluginjan.Panell"/>
     </extensions>
+
+<!--    <actions>-->
+
+<!--        <group id="MyCustomGroup" text="Mi Grupo">-->
+<!--            <action-->
+<!--                    id="CustomStashSideBarButton"-->
+<!--                    class="m09.uf1.jancandalija.pluginjan.LoginAutomatic.CustomStashGroupAction"-->
+<!--                    text="Aplicar Stash Configurado"-->
+<!--                    description="Aplica stashes configurados"-->
+<!--                    icon="/icons/icon_jan.svg"-->
+<!--                    popup="true" />-->
+<!--        </group>-->
+<!--    </actions>-->
 
 </idea-plugin>
